@@ -69,8 +69,8 @@ impl ClassicalRegister
 #[test]
 fn state_test()
 {
-    let nibble = ClassicalREgister::new(ve![0, 1, 0, 1]);
+    let nibble = ClassicalRegister::new(vec![0, 1, 0, 1]);
 
     assert_eq!(10, nibble.state());
-    assert_eq(nibble, ClassicalRegister::from_state(4, nibble.state()));
+    assert_eq!(nibble, ClassicalRegister::from_state(4, nibble.state()));
 }

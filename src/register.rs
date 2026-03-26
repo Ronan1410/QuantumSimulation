@@ -24,16 +24,16 @@ impl QuantumRegister
 
         self.collapsed = Cell::new(true);
 
-        let smaple = rand::random::<f64>() % 1.0;
+        let sample = rand::random::<f64>() % 1.0;
         let mut cumulative = 0f64;
 
         for (state, coefficient) in self.ket.iter().enumerate()
         {
-            cummulatice += coeffiecient.norm_sqr();
+            cumulative += coefficient.norm_sqr();
 
-            if sample < cummulative
+            if sample < cumulative
             {
-                return Classicalregister::from_state(self.width, state as u32)
+                return ClassicalRegister::from_state(self.width, state as u32)
             }
         }
         ClassicalRegister::from_state(self.width, 0)
