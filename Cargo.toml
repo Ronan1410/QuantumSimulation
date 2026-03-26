@@ -5,4 +5,6 @@ edition = "2024"
 
 [dependencies]
 float-cmp = "0.10.0"
+la = "0.2.0"
+num = "0.4.3"
 rand = "0.10.0"
