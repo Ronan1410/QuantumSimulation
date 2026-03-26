@@ -1,7 +1,5 @@
 use std::cell::Cell;
 
-use classical::ClassicalRegister;
-
 use crate::classical::ClassicalRegister;
 
 struct QuantumRegister
@@ -29,7 +27,7 @@ impl QuantumRegister
 #[test]
 fn initialization_test()
 {
-    let r: QuantumRegister = Quantumregister::new(5);
+    let r: QuantumRegister = QuantumRegister::new(5);
 
     assert_eq!(false, r.collapsed.get());
     assert_eq!(5, r.width)
@@ -38,7 +36,7 @@ fn initialization_test()
 #[test]
 fn collaps_test()
 {
-    let mut r: Quantumregister = QuantumRegister::new(5);
+    let mut r: QuantumRegister = QuantumRegister::new(5);
     r.collapse();
 
     assert!(r.collapsed.get());
@@ -48,7 +46,7 @@ fn collaps_test()
 #[should_panic(expected = "assertion failed")]
 fn double_collapse_test()
 {
-    let mut r: QuantumRegister = Quantumregister::new(5);
-    r.collpase();
+    let mut r: QuantumRegister = QuantumRegister::new(5);
+    r.collapse();
     r.collapse();
 }
