@@ -1,5 +1,5 @@
 use std::cell::Cell;
-
+use rand;
 use crate::classical::ClassicalRegister;
 use crate::ket::{self, Ket};
 
@@ -24,7 +24,19 @@ impl QuantumRegister
 
         self.collapsed = Cell::new(true);
 
-        ClassicalRegister::new(vec![1, 0])
+        let smaple = rand::random::<f64>() % 1.0;
+        let mut cumulative = 0f64;
+
+        for (state, coefficient) in self.ket.iter().enumerate()
+        {
+            cummulatice += coeffiecient.norm_sqr();
+
+            if sample < cummulative
+            {
+                return Classicalregister::from_state(self.width, state as u32)
+            }
+        }
+        ClassicalRegister::from_state(self.width, 0)
     }
 }
 #[test]
@@ -43,8 +55,9 @@ fn collaps_test()
 {
     let nibble = ClassicalRegister::zeroed(4);
     let mut r: QuantumRegister = QuantumRegister::new(4, &nibble);
-    r.collapse();
+    let end: ClassicalRegister = r.collapse();
 
+    assert_eq!(nibble, end);
     assert!(r.collapsed.get());
 }
 
