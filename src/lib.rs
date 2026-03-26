@@ -1,6 +1,7 @@
 #[macro_use]extern crate la;
 
 mod macros;
-mod classical;
+pub mod classical;
+mod ket;
 mod register;
 mod qbit;

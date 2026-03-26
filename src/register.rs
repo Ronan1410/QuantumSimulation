@@ -1,18 +1,21 @@
 use std::cell::Cell;
 
 use crate::classical::ClassicalRegister;
+use crate::ket::{self, Ket};
 
 struct QuantumRegister
 {
     width: usize,
     collapsed: Cell<bool>,
+    ket: Ket,
 }
 
 impl QuantumRegister
 {
-    fn new(width: usize) -> QuantumRegister
+    fn new(width: usize, initial: &ClassicalRegister) -> QuantumRegister
     {
-        QuantumRegister { width, collapsed: Cell::new(false) }
+        assert_eq!(width, initial.width());
+        QuantumRegister { width, collapsed: Cell::new(false), ket: ket::from_classical(initial) }
     }
 
     fn collapse(&mut self) -> ClassicalRegister 
@@ -27,16 +30,19 @@ impl QuantumRegister
 #[test]
 fn initialization_test()
 {
-    let r: QuantumRegister = QuantumRegister::new(5);
+    let nibble = ClassicalRegister::zeroed(4);
+    let r: QuantumRegister = QuantumRegister::new(4, &nibble);
 
     assert_eq!(false, r.collapsed.get());
-    assert_eq!(5, r.width)
+    assert_eq!(4, r.width);
+    assert!(ket::is_classical(&r.ket));
 }
 
 #[test]
 fn collaps_test()
 {
-    let mut r: QuantumRegister = QuantumRegister::new(5);
+    let nibble = ClassicalRegister::zeroed(4);
+    let mut r: QuantumRegister = QuantumRegister::new(4, &nibble);
     r.collapse();
 
     assert!(r.collapsed.get());
@@ -46,7 +52,8 @@ fn collaps_test()
 #[should_panic(expected = "assertion failed")]
 fn double_collapse_test()
 {
-    let mut r: QuantumRegister = QuantumRegister::new(5);
+    let nibble = ClassicalRegister::zeroed(4);
+    let mut r: QuantumRegister = QuantumRegister::new(4, &nibble);
     r.collapse();
     r.collapse();
 }
