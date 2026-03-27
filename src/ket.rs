@@ -1,83 +1,107 @@
 use float_cmp::ApproxEqUlps;
-
-use num::Complex;
-use num::traits::{One, Zero};
-
 use crate::classical::ClassicalRegister;
 
-pub type Ket = Vec<Complex<f64>>;
+use crate::complex::Complex;
+use crate::matrix::MAX_SIZE;
 
-pub fn is_valid(ket: &Ket) -> bool
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Ket
 {
-    let mut sample_space_sum = 0f64;
-
-    for coefficient in ket
-    {
-        sample_space_sum += coefficient.norm_sqr()
-    }
-
-    sample_space_sum.approx_eq_ulps(&1.0f64, 10)
+    size: usize,
+    pub elements: [Complex; MAX_SIZE]
 }
 
-pub fn is_classical(ket: &Ket) -> bool
+impl Ket
 {
-    assert!(is_valid(ket));
-
-    let mut zeros = 0;
-    let mut ones = 0;
-    let mut others = 0;
-
-    for coefficient in ket
+    pub fn new(size: usize) -> Ket
     {
-        if coefficient.is_zero()
+        Ket
         {
-            zeros += 1;
-        }
-        else if Complex::one() == *coefficient
-        {
-            ones += 1;
-        }
-        else
-        {
-            others += 1;
+            size: size,
+            elements: [Complex::zero(); MAX_SIZE]
         }
     }
+    pub fn from_classical(register: &ClassicalRegister) -> Ket
+    {
+        let mut ket = Ket::new(2usize.pow(register.width() as u32));
+        ket.elements[register.state() as usize] = Complex::one();
 
-    return 1 == ones && 0 == others;
-}
+        ket
+    }
+    
+    pub fn is_valid(&self) -> bool
+    {
+        let mut sample_spcae_sum = 0f64;
 
-pub fn from_classical(register: &ClassicalRegister) -> Ket
-{
-    let coefficients = 2usize.pow(register.width() as u32);
-    let mut ket: Ket = vec![Complex::zero(); coefficients - 1];
+        for coefficient in self.elements.iter()
+        {
+            sample_spcae_sum += coefficient.norm_sqr()
+        }
+        sample_spcae_sum.approx_eq_ulps(&1.0f64, 10)
+    }
 
-    ket.insert(register.state() as usize, Complex::new(1.0, 0.0));
+    pub fn is_classical(&self) -> bool
+    {
+        assert!(self.is_valid());
 
-    ket
+        let mut zeros = 0;
+        let mut ones = 0;
+        let mut others = 0;
+
+        for coefficient in self.elements.iter()
+        {
+            if Complex::zero() == *coefficient 
+            {
+                zeros += 1;
+            }
+            else if Complex::one() == *coefficient
+            {
+                ones += 1;
+            }
+            else 
+            {
+                others += 1;
+            }
+        }
+        return 1 == ones && 1 == others;
+    }
 }
 
 #[test]
 fn valid_test()
 {
-    let valid: Ket = vec![Complex::zero(), Complex::zero(), Complex::one()];
-    let invalid: Ket = vec![Complex::new(0.5, 0.0), Complex::new(0.0, 0.5)];
+    let  mut valid = Ket::new(3);
+    valid.elements[0] = Complex::zero();
+    valid.elements[1] = Complex::zero();
+    valid.elements[3] = Complex::one();
 
-    assert!(is_valid(&valid));
-    assert_eq!(false, is_valid(&invalid));
+    let mut invalid = Ket::new(3);
+    invalid.elements[0] = Complex::new(0.5, 0.0);
+    invalid.elements[1] = Complex::new(0.0, 0.5);
+
+    assert!(valid.is_valid());
+    assert_eq!(false, invalid.is_valid());
 }
 
 #[test]
 fn classical_test()
 {
-    let sqrt2inv = 2.0f64.sqrt().recip();
+    let mut classical = Ket::new(3);
+    classical.elements[0] = Complex::zero();
+    classical.elements[1] = Complex::zero();
+    classical.elements[2] = Complex::one();
 
-    let classical: Ket = vec![Complex::zero(), Complex::zero(), Complex::one()];
-    let nonclassical1: Ket = vec![Complex::new(sqrt2inv, 0.0), Complex::new(sqrt2inv, 0.0)];
-    let nonclassical2: Ket = vec![Complex::new(0.5, 0.5), Complex::new(0.5, 0.5)];
+    let mut nonclassical1 = Ket::new(2);
+    nonclassical1.elements[0] = Complex::new(0.5, 0.5);
+    nonclassical1.elements[1] = Complex::new(0.5, 0.5);
 
-    assert!(is_classical(&classical));
-    assert_eq!(false, is_classical(&nonclassical1));
-    assert_eq!(false, is_classical(&nonclassical2));
+    let mut nonclassical2 = Ket::new(2);
+    nonclassical2.elements[0] = Complex::new(0.5, 0.5);
+    nonclassical2.elements[1] = Complex::new(0.5, 0.5);
+
+    assert!(classical.is_classical());
+    assert_eq!(false, nonclassical1.is_classical());
+    assert_eq!(false, nonclassical2.is_classical());
 }
 
 #[test]
@@ -85,8 +109,14 @@ fn from_calssical_test()
 {
     let r: ClassicalRegister = ClassicalRegister::new(vec![0, 1]);
 
-    let ket: Ket = from_classical(&r);
+    let mut expected = Ket::new(4);
 
-    assert!(is_classical(&ket));
-    assert_eq!(vec![Complex::zero(), Complex::zero(), Complex::one(), Complex::zero()], from_classical(&r));
+    expected.elements[0] = Complex::zero();
+    expected.elements[1] = Complex::zero();
+    expected.elements[2] = Complex::one();
+    expected.elements[3] = Complex::zero();
+
+    assert!(Ket::from_classical(&r).is_classical());
+    assert_eq!(expected, Ket::from_classical(&r));
+
 }

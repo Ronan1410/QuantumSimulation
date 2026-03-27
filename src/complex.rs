@@ -29,6 +29,11 @@ impl Complex
     {
         Complex::new(0f64, 0f64)
     }
+
+    pub fn one() -> Complex
+    {
+        Complex::new(1f64, 0f64)
+    }
 }
 
 impl Add<Complex> for Complex 

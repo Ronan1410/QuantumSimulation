@@ -5,7 +5,7 @@ use std::ops::Mul;
 
 use crate::complex::Complex;
 
-const MAX_SIZE: usize = 32;
+pub const MAX_SIZE: usize = 32;
 const MAX_ELEMENTS: usize = MAX_SIZE * MAX_SIZE;
 
 struct Matrix

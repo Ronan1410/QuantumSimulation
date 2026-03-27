@@ -15,7 +15,7 @@ impl QuantumRegister
     fn new(width: usize, initial: &ClassicalRegister) -> QuantumRegister
     {
         assert_eq!(width, initial.width());
-        QuantumRegister { width, collapsed: Cell::new(false), ket: ket::from_classical(initial) }
+        QuantumRegister { width, collapsed: Cell::new(false), ket: Ket::from_classical(initial) }
     }
 
     fn collapse(&mut self) -> ClassicalRegister 
@@ -27,7 +27,7 @@ impl QuantumRegister
         let sample = rand::random::<f64>() % 1.0;
         let mut cumulative = 0f64;
 
-        for (state, coefficient) in self.ket.iter().enumerate()
+        for (state, coefficient) in self.ket.elements.iter().enumerate()
         {
             cumulative += coefficient.norm_sqr();
 
@@ -47,7 +47,7 @@ fn initialization_test()
 
     assert_eq!(false, r.collapsed.get());
     assert_eq!(4, r.width);
-    assert!(ket::is_classical(&r.ket));
+    assert!(&r.ket.is_classical());
 }
 
 #[test]
