@@ -27,7 +27,7 @@ pub mod gates
     use crate::ket::Ket;
     use crate::matrix::Matrix;
 
-    pub fn identify(width: usize) -> Gate
+    pub fn identity(width: usize) -> Gate
     {
         let m: Matrix = Matrix::identify(Ket::size(width));
 
@@ -39,7 +39,7 @@ pub mod gates
     {
         use crate::complex::Complex;
 
-        let id_gate = identify(3);
+        let id_gate = identity(3);
         let mut ket = Ket::new(8);
         ket.elements[5] = c![99f64, 0f64];
 

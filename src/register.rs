@@ -1,9 +1,10 @@
 use std::cell::Cell;
 use rand;
 use crate::classical::ClassicalRegister;
-use crate::ket::{self, Ket};
+use crate::ket::Ket;
+use crate::gate::Gate;
 
-struct QuantumRegister
+pub struct QuantumRegister
 {
     width: usize,
     collapsed: Cell<bool>,
@@ -12,13 +13,21 @@ struct QuantumRegister
 
 impl QuantumRegister
 {
-    fn new(width: usize, initial: &ClassicalRegister) -> QuantumRegister
+    pub fn new(width: usize, initial: &ClassicalRegister) -> QuantumRegister
     {
         assert_eq!(width, initial.width());
         QuantumRegister { width, collapsed: Cell::new(false), ket: Ket::from_classical(initial) }
     }
 
-    fn collapse(&mut self) -> ClassicalRegister 
+    pub fn apply(&mut self, gate:Gate)
+    {
+        assert_eq!(false, self.collapsed.get());
+        assert_eq!(self.width, gate.width);
+
+        self.ket.apply(gate);
+    }
+
+    pub fn collapse(&mut self) -> ClassicalRegister 
     {
         assert_eq!(false, self.collapsed.get());
 

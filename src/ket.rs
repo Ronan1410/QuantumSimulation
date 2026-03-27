@@ -29,7 +29,7 @@ impl Ket
 
         ket
     }
-    
+    #[allow(unused)]
     pub fn is_valid(&self) -> bool
     {
         let mut sample_spcae_sum = 0f64;
@@ -41,6 +41,7 @@ impl Ket
         sample_spcae_sum.approx_eq_ulps(&1.0f64, 10)
     }
 
+    #[allow(unused)]
     pub fn is_classical(&self) -> bool
     {
         assert!(self.is_valid());

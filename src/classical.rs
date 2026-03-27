@@ -46,6 +46,11 @@ impl ClassicalRegister
         }
         ClassicalRegister::new(bits)
     }
+    pub fn from_int(width: usize, int: u32) -> ClassicalRegister
+    {
+        ClassicalRegister::from_state(width, int)
+    }
+
     pub fn zeroed(width: usize) -> ClassicalRegister
     {
         ClassicalRegister::new(vec![0; width])
@@ -63,6 +68,11 @@ impl ClassicalRegister
             }
         }
         state
+    }
+
+    pub fn to_int(&self) -> u32
+    {
+        self.state()
     }
 }
 

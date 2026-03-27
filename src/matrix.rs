@@ -4,7 +4,6 @@ use std::ops::Add;
 use std::ops::Mul;
 
 use crate::complex::Complex;
-use crate::ket::Ket;
 use crate::matrix;
 
 pub const MAX_SIZE: usize = 32;
