@@ -1,0 +1,15 @@
+language: rust
+
+os:
+  -linux
+  -windows
+  -osx
+
+rust:
+  -stable
+  -beta
+  -nightly
+
+matrix:
+  allow_failures:
+    -rust: nightly
