@@ -2,6 +2,7 @@ use float_cmp::ApproxEqUlps;
 use crate::classical::ClassicalRegister;
 
 use crate::complex::Complex;
+use crate::gate::Gate;
 use crate::matrix::MAX_SIZE;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -23,7 +24,7 @@ impl Ket
     }
     pub fn from_classical(register: &ClassicalRegister) -> Ket
     {
-        let mut ket = Ket::new(2usize.pow(register.width() as u32));
+        let mut ket = Ket::new(Ket::size(register.width()));
         ket.elements[register.state() as usize] = Complex::one();
 
         ket
@@ -64,6 +65,16 @@ impl Ket
             }
         }
         return 1 == ones && 1 == others;
+    }
+
+    pub fn size(register_width: usize) -> usize
+    {
+        2usize.pow(register_width as u32)
+    }
+
+    pub fn apply(&mut self, gate: Gate)
+    {
+        self.elements = &gate.matrix * &self.elements;
     }
 }
 
