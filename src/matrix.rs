@@ -11,9 +11,10 @@ const MAX_ELEMENTS: usize = MAX_SIZE * MAX_SIZE;
 
 pub type Vector = [Complex; MAX_SIZE];
 
+#[allow(missing_copy_implementations)]
 pub struct Matrix
 {
-    pub size: usize,
+    size: usize,
     elements: [Complex; MAX_ELEMENTS]
 }
 
@@ -28,6 +29,11 @@ impl Matrix
             size: size,
             elements: [Complex::zero(); MAX_ELEMENTS]
         }
+    }
+
+    pub fn size(self: &Matrix) -> usize
+    {
+        self.size
     }
 
     pub fn identify(size: usize) -> Matrix

@@ -1,6 +1,5 @@
 use float_cmp::ApproxEqUlps;
-use crate::classical::ClassicalRegister;
-
+use crate::registers::ClassicalRegister;
 use crate::complex::Complex;
 use crate::gate::Gate;
 use crate::matrix::MAX_SIZE;
@@ -75,7 +74,7 @@ impl Ket
 
     pub fn apply(&mut self, gate: Gate)
     {
-        self.elements = &gate.matrix * &self.elements;
+        self.elements = gate.matrix() * &self.elements;
     }
 }
 

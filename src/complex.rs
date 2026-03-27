@@ -65,6 +65,7 @@ impl AddAssign for Complex
     }
 }
 
+#[macro_export]
 macro_rules! c
 {
     ($re:expr, $im:expr) =>

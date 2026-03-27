@@ -1,6 +1,6 @@
-use crate::classical::ClassicalRegister;
 use crate::gate::Gate;
-use crate::register::QuantumRegister;
+use crate::registers::ClassicalRegister;
+use crate::registers::QuantumRegister;
 
 #[derive(Debug, Eq, PartialEq)]
 enum State
@@ -92,7 +92,7 @@ fn state_test()
 #[test]
 fn compute_test()
 {
-    use crate::gate::gates;
+    use crate::gates;
 
     let mut c = QuantumComputer::new(3);
 
