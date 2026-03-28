@@ -15,17 +15,46 @@ pub fn identity(width: usize) -> Gate
 pub fn hadamard() -> Gate
 {
     let sqrt2inv = c![2.0f64.sqrt().recip(), 0f64];
-
-    let mut m = Matrix::new(2);
-
-    m.set(0, 0, sqrt2inv);
-    m.set(0, 1, sqrt2inv);
-    m.set(1, 0, sqrt2inv);
-    m.set(01, 1, sqrt2inv);
+    let mut m = m![sqrt2inv,
+                   sqrt2inv,
+                   sqrt2inv,
+                   -sqrt2inv];
 
     Gate::new(1, m)
 }
 
+#[allow(unused)]
+pub fn paulu_x() -> Gate
+{
+    let m = m![Complex::zero(),
+                        Complex::one(),
+                        Complex::one(),
+                        Complex::zero()];
+
+    Gate::new(1, m)
+}
+
+#[allow(unused)]
+pub fn pauli_y() -> Gate
+{
+    let m = m![Complex::zero(),
+                        -Complex::i(),
+                        Complex::i(),
+                        Complex::zero()];
+
+    Gate::new(1, m)
+}
+
+#[allow(unsued)]
+pub fn pauli_z() -> Gate
+{
+    let m = m![Complex::one(),
+                        Complex::zero(),
+                        Complex::zero(),
+                        -Complex::one()];
+
+    Gate::new(1, m)
+}
 #[test]
 fn identify_test()
 {
@@ -61,7 +90,7 @@ fn hadnmard_test()
 
     let mut ones = 0;
 
-    for i in 0..1000
+    for _ in 0..1000
     {
         if 1 == apply_hadamard()
         {
@@ -69,4 +98,61 @@ fn hadnmard_test()
         }
     }
     assert!(ones <= 600 && 400 <= ones)
+}
+
+#[test]
+fn pauli_x_test() 
+{
+    use crate::computer::QuantumComputer;
+
+    let mut c = QuantumComputer::new(1);
+
+    c.initialize(0);
+    c.apply(pauli_y());
+    c.collapse();
+    assert_eq!(1, c.value());
+    c.reset();
+
+    c.initialize(1);
+    c.apply(pauli_y());
+    c.collapse();
+    assert_eq!(0, c.value());
+}
+
+#[test]
+fn pauli_y_test() 
+{
+    use crate::computer::QuantumComputer;
+
+    let mut c = QuantumComputer::new(1);
+
+    c.initialize(0);
+    c.apply(pauli_y());
+    c.collapse();
+    assert_eq!(1, c.value());
+    c.reset();
+
+    c.initialize(1);
+    c.apply(pauli_y());
+    c.collapse();
+    assert_eq!(0, c.value());
+}
+
+#[test]
+fn pauli_z_test() 
+{
+    use crate::computer::QuantumComputer;
+
+    let mut c = QuantumComputer::new(1);
+
+    c.initialize(0);
+    c.apply(pauli_z());
+    c.collapse();
+    assert_eq!(0, c.value());
+    c.reset();
+
+    c.initialize(1);
+    c.apply(pauli_z());
+    c.collapse();
+    assert_eq!(1, c.value());
 }
