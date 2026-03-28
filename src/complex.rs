@@ -22,6 +22,11 @@ impl Complex
         }
     }
 
+    pub fn new_euler(r: f64, phi: f64) -> Complex
+    {
+        Complex {re: r * phi.cos(), im: r * phi.sin()}
+    }
+
     pub fn norm_sqr(&self) -> f64
     {
         self.re * self.re + self.im * self.im

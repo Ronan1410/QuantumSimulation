@@ -55,6 +55,16 @@ pub fn pauli_z() -> Gate
 
     Gate::new(1, m)
 }
+#[allow(unused)]
+pub fn phase_shift(phi: f64) -> Gate
+{
+    let m = m![Complex::one(),
+                        Complex::zero(),
+                        Complex::zero(),
+                        Complex::new_euler(1f64, phi)];
+    
+    Gate::new(1, m)
+}
 #[test]
 fn identify_test()
 {
@@ -153,6 +163,27 @@ fn pauli_z_test()
 
     c.initialize(1);
     c.apply(pauli_z());
+    c.collapse();
+    assert_eq!(1, c.value());
+}
+
+#[test]
+fn phase_shift_test() {
+    use crate::computer::QuantumComputer;
+
+    let phi = 0.3f64;
+    let mut c = QuantumComputer::new(1);
+
+    // |0> goes to |0>
+    c.initialize(0);
+    c.apply(phase_shift(phi));
+    c.collapse();
+    assert_eq!(0, c.value());
+    c.reset();
+
+    // |1> goes to exp(i * phi)|1>
+    c.initialize(1);
+    c.apply(phase_shift(phi));
     c.collapse();
     assert_eq!(1, c.value());
 }
