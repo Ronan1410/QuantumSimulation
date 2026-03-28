@@ -1,5 +1,6 @@
 mod macros {
     #![macro_use]
+    #[macro_export]
     macro_rules! square 
     {
         ($x:expr) => 
@@ -8,6 +9,7 @@ mod macros {
         };
     }
 
+    #[macro_export]
     macro_rules! abs_square 
     {
         ($re:expr, $im:expr) => 
@@ -17,10 +19,11 @@ mod macros {
     }
 }
 
-mod qubit {
+pub mod qubit {
     use float_cmp::ApproxEqUlps;
 
-    struct NonEntangledQubit 
+    #[derive(Clone, Copy, Debug)]
+    pub struct NonEntangledQubit 
     {
         a_re: f64,
         a_im: f64,
@@ -30,7 +33,7 @@ mod qubit {
 
     impl NonEntangledQubit 
     {
-        fn new(a_re: f64, a_im: f64, b_re: f64, b_im: f64) -> NonEntangledQubit {
+        pub fn new(a_re: f64, a_im: f64, b_re: f64, b_im: f64) -> NonEntangledQubit {
             let candidate = NonEntangledQubit 
             {
                 a_re: a_re,
@@ -45,7 +48,7 @@ mod qubit {
         }
 
         #[cfg(not(feature = "optimize"))]
-        fn validate(&self) -> bool 
+        pub fn validate(&self) -> bool 
         {
             let sample_space_sum: f64 = abs_square!(self.a_re, self.a_im) +
                                         abs_square!(self.b_re, self.b_im);

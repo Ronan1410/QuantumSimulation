@@ -2,6 +2,7 @@
 use std::ops::Add;
 use std::ops::AddAssign;
 use std::ops::Mul;
+use std::ops::Neg;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Complex
@@ -71,6 +72,16 @@ macro_rules! c
     ($re:expr, $im:expr) =>
     {
         Complex::new($re, $im)
+    }
+}
+
+impl Neg for Complex
+{
+    type Output = Complex;
+
+    fn neg(self) -> Complex
+    {
+        c![-self.re, -self.im]
     }
 }
 
