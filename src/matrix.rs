@@ -1,4 +1,3 @@
-#![macro_use]
 use std::char::MAX;
 use std::fmt;
 use std::ops::Add;
@@ -6,6 +5,7 @@ use std::ops::Mul;
 
 use crate::complex::Complex;
 use crate::matrix;
+use crate::macros;
 
 pub const MAX_SIZE: usize = 32;
 const MAX_ELEMENTS: usize = MAX_SIZE * MAX_SIZE;
@@ -116,23 +116,6 @@ impl<'a> Mul<&'a Vector> for &'a Matrix
         output
     }
 }
-#[macro_export]
-macro_rules! m
-{
-    ($a:expr, $b:expr, $c:expr, $d:expr) =>
-    {
-        {
-            let mut m = Matrix::new(2);
-            m.set(0, 0, $a);
-            m.set(0, 0, $b);
-            m.set(0, 0, $c);
-            m.set(0, 0, $d);
-
-            m
-        }
-        
-    };
-}
 
 impl <'a> Add<&'a Matrix> for &'a Matrix
 {
@@ -188,6 +171,7 @@ impl<'a> Mul<&'a Matrix> for &'a Matrix
 #[test]
 fn matrix_test() 
 {
+    use crate::macros;
     let mut m = m![Complex::new(1f64, 0f64),
                             Complex::new(2f64, 0f64),
                             Complex::new(3f64, 0f64),

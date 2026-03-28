@@ -1,4 +1,3 @@
-#![macro_use]
 use std::ops::Add;
 use std::ops::AddAssign;
 use std::ops::Mul;
@@ -73,15 +72,6 @@ impl AddAssign for Complex
     fn add_assign(&mut self, rhs: Complex)
     {
         *self = *self + rhs;
-    }
-}
-
-#[macro_export]
-macro_rules! c
-{
-    ($re:expr, $im:expr) =>
-    {
-        Complex::new($re, $im)
     }
 }
 

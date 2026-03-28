@@ -1,11 +1,13 @@
 extern crate float_cmp;
-#[macro_use]
-extern crate la;
 extern crate rand;
-mod complex;
-mod matrix;
-mod computer;
-mod gate;
-mod gates;
-mod ket;
-mod registers;
+
+pub mod macros;
+
+pub mod complex;
+pub mod computer;
+pub mod gate;
+pub mod gates;
+pub mod ket;
+pub mod matrix;
+pub mod other;
+pub mod registers;
