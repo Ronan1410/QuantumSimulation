@@ -11,14 +11,12 @@ pub fn identity(width: usize) -> Gate
     Gate::new(width, m)
 }
 
-#[allow(unused)]
+#[allow(unused, trivial_numeric_casts)]
 pub fn hadamard() -> Gate
 {
-    let sqrt2inv = c![2.0f64.sqrt().recip(), 0f64];
-    let mut m = m![sqrt2inv,
-                   sqrt2inv;
-                   sqrt2inv,
-                   -sqrt2inv];
+    let sqrt2inv = 2.0f64.sqrt().recip();
+    let mut m = m_real![sqrt2inv, sqrt2inv;
+                            sqrt2inv, -sqrt2inv];
 
     Gate::new(1, m)
 }
@@ -26,10 +24,8 @@ pub fn hadamard() -> Gate
 #[allow(unused)]
 pub fn paulu_x() -> Gate
 {
-    let m = m![Complex::zero(),
-                        Complex::one();
-                        Complex::one(),
-                        Complex::zero()];
+    let m = m_real![0, 1;
+                            1, 0];
 
     Gate::new(1, m)
 }
@@ -48,10 +44,8 @@ pub fn pauli_y() -> Gate
 #[allow(unused)]
 pub fn pauli_z() -> Gate
 {
-    let m = m![Complex::one(),
-                        Complex::zero();
-                        Complex::zero(),
-                        -Complex::one()];
+    let m = m_real![1, 0;
+                            0, -1];
 
     Gate::new(1, m)
 }
@@ -65,6 +59,17 @@ pub fn phase_shift(phi: f64) -> Gate
     
     Gate::new(1, m)
 }
+
+pub fn swap() -> Gate
+{
+    let m = m_real![1, 0, 0, 0;
+                            0, 0, 1, 0;
+                            0, 1, 0, 0;
+                            0, 0, 0, 1];
+
+    Gate::new(2, m)
+}
+
 #[test]
 fn identify_test()
 {
@@ -186,4 +191,35 @@ fn phase_shift_test() {
     c.apply(phase_shift(phi));
     c.collapse();
     assert_eq!(1, c.value());
+}
+
+#[test]
+fn swap_test() 
+{
+    use crate::computer::QuantumComputer;
+
+    let mut c = QuantumComputer::new(2);
+
+    c.initialize(0);
+    c.apply(swap());
+    c.collapse();
+    assert_eq!(0, c.value());
+    c.reset();
+
+    c.initialize(1);
+    c.apply(swap());
+    c.collapse();
+    assert_eq!(2, c.value());
+    c.reset();
+
+    c.initialize(2);
+    c.apply(swap());
+    c.collapse();
+    assert_eq!(1, c.value());
+    c.reset();
+
+    c.initialize(3);
+    c.apply(swap());
+    c.collapse();
+    assert_eq!(3, c.value());
 }
