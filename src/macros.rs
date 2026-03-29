@@ -9,20 +9,32 @@ macro_rules! c
     }
 }
 
+macro_rules! m_one
+{
+    ($item:tt) => (1)
+}
+
+macro_rules! m_rec
+{
+    ([$($row:tt),*] [$($i:expr),*]) => ({
+        let _rows = 0 $(+ m_one!($row))*;
+        let _cols = (0 $(+ m_one!($i))*) / _rows;
+
+        assert_eq!(_rows, _cols);
+
+        Matrix::new_from_elements(_rows, vec![$($i), *])
+    })
+}
+
 #[macro_export]
 macro_rules! m
 {
-    ($a:expr, $b:expr, $c:expr, $d:expr) =>
-    {
-        {
-            let mut m = Matrix::new(2);
-            m.set(0, 0, $a);
-            m.set(0, 0, $b);
-            m.set(0, 0, $c);
-            m.set(0, 0, $d);
+    ( $( $( $i:expr ),* );* ) => ( m_rec!([$([$($i),*]),*] [$($($i),*),*]) )
+}
 
-            m
-        }
-        
-    };
+#[macro_export]
+macro_rules! m_real
+{
+    ( $( $( $i:expr ),* );* ) => ( m_rec!([$([$(Complex::new($i as f64, 0f64)),*]),*]
+                                        [$($(Complex::new($i as f64, 0f64)),*),*]) )
 }
