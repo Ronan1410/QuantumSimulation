@@ -12,13 +12,21 @@ pub fn identity(width: usize) -> Gate
 }
 
 #[allow(unused, trivial_numeric_casts)]
-pub fn hadamard() -> Gate
+pub fn hadamard(n: usize) -> Gate
 {
     let sqrt2inv = 2.0f64.sqrt().recip();
-    let mut m = m_real![sqrt2inv, sqrt2inv;
-                            sqrt2inv, -sqrt2inv];
+    
+    let mut m = match n{
+        0 => m_real![sqrt2inv, sqrt2inv;
+                            sqrt2inv, -sqrt2inv],
+        2 => m_real![0.5, 0.5, 0.5, 0.5;
+                            0.5, -0.5, 0.5, -0.5;
+                            0.5, 0.5, -0.5, -0.5;
+                            0.5, -0.5, -0.5, 0.5],
+        _ => panic!("cannot computer hadaman gate of dimensions > 3")
+    };
 
-    Gate::new(1, m)
+    Gate::new(n, m)
 }
 
 #[allow(unused)]
@@ -189,7 +197,7 @@ fn hadnmard_test()
 
     let mut apply_hadamard = || {
         c.initialize(0);
-        c.apply(hadamard());
+        c.apply(hadamard(1));
         c.collapse();
         let v = c.value();
         c.reset();
