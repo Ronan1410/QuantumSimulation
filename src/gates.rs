@@ -152,6 +152,18 @@ pub fn toffoli() -> Gate
     Gate::new(3, m)
 }
 
+#[allow(unused)]
+pub fn fredkin() -> Gate
+{
+    let mut m = Matrix::identify(8);
+
+    let mut exchange = m_real![0, 1;
+                                        1, 0];
+    m.embed(&exchange, 5, 5);
+
+    Gate::new(3, m)
+}
+
 #[test]
 fn identify_test()
 {
@@ -298,4 +310,17 @@ fn toffoli_test()
     test_gate!(c, toffoli(), 2, 2);
     test_gate!(c, toffoli(), 6, 7);
     test_gate!(c, toffoli(), 7, 6);
+}
+
+#[test]
+fn fredkin_test()
+{
+    use crate::computer::QuantumComputer;
+
+    let mut c = QuantumComputer::new(3);
+
+    test_gate!(c, fredkin(), 0, 0);
+    test_gate!(c, fredkin(), 5, 6);
+    test_gate!(c, fredkin(), 6, 5);
+    test_gate!(c, fredkin(), 7, 7);
 }
