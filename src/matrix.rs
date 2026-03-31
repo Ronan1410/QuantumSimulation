@@ -114,6 +114,22 @@ impl Matrix
 
         true
     }
+
+    pub fn permute_rows(&self, permutation: Vec<usize>) -> Matrix
+    {
+        assert!(self.size == permutation.len());
+
+        let mut m = Matrix::new(self.size);
+
+        for (source_i, target_i) in permutation.iter().enumerate()
+        {
+            for j in 0..self.size
+            {
+                m.set(*target_i, j, self.get(source_i, j));
+            }
+        }
+        m
+    }
 }
 
 impl fmt::Debug for Matrix
@@ -259,4 +275,12 @@ fn embed_test()
     m.embed(&n, 1, 1);
 
     assert_eq!(m_real![1, 2; 3, 4], m);
+}
+#[test]
+fn permutation_test()
+{
+    let m = m_real![1, 2; 3, 4];
+    let n = m.permute_row(vec![1, 0]);
+
+    assert_eq!(m_real![3, 4; 1, 2],  n);
 }
