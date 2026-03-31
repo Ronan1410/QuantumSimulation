@@ -117,7 +117,7 @@ impl Matrix
 
     pub fn permute_rows(&self, permutation: Vec<usize>) -> Matrix
     {
-        assert!(self.size == permutation.len());
+        assert_eq!(self.size, permutation.len());
 
         let mut m = Matrix::new(self.size);
 
@@ -133,7 +133,7 @@ impl Matrix
 
     pub fn permute_columns(&self, permutation: Vec<usize>) -> Matrix
     {
-        assert!(self.size == permutation.len());
+        assert_eq!(self.size, permutation.len());
 
         let mut m = Matrix::new(self.size);
 
@@ -145,6 +145,20 @@ impl Matrix
             }
         }
         m
+    }
+
+    fn permutation_valid(permutation: &Vec<usize>) -> bool
+    {
+        let mut sorted = permutation.clone();
+        sorted.sort();
+        for (i, val) in sorted.iter().enumerate()
+        {
+            if 1 != *val
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }
 
@@ -303,4 +317,20 @@ fn permutation_test()
 
     assert_eq!(m_real![1, 2; 3, 4], m.permute_columns(vec![0, 1]));
     assert_eq!(m_real![2, 1; 4, 3], m.permute_columns(vec![1, 0]));
+}
+
+#[test]
+#[should_panic(expected = "assertion failed")]
+fn bad_row_permutation_test() {
+    let m = m_real![1, 2; 3, 4];
+
+    m.permute_rows(vec![0, 0]);
+}
+
+#[test]
+#[should_panic(expected = "assertion failed")]
+fn bad_column_permutation_test() {
+    let m = m_real![1, 2; 3, 4];
+
+    m.permute_columns(vec![0, 0]);
 }
