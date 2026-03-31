@@ -70,6 +70,20 @@ pub fn swap() -> Gate
     Gate::new(2, m)
 }
 
+#[allow(unused)]
+pub fn sqrt_swap() -> Gate
+{
+    let alpha_one = c!(0.5f64, 0.5f640);
+    let alpha_two = c!(0.5f64, -0.5f640);
+
+    let m = m![Complex::one(), Complex::zero(), Complex::zero(), Complex::zero();
+                        Complex::zero(), alpha_one, alpha_two, Complex::zero();
+                        Complex::zero(), alpha_two, alpha_one, Complex::zero();
+                        Complex::zero(), Complex::zero(), Complex::zero(), Complex::one()];
+    
+    Gate::new(2, m)
+}
+
 #[test]
 fn identify_test()
 {
@@ -216,6 +230,25 @@ fn swap_test()
     c.apply(swap());
     c.collapse();
     assert_eq!(1, c.value());
+    c.reset();
+
+    c.initialize(3);
+    c.apply(swap());
+    c.collapse();
+    assert_eq!(3, c.value());
+}
+
+#[test]
+pub fn sqrt_swap_test()
+{
+    use crate::computer::QuantumComputer;
+
+    let mut c = QuantumComputer::new(2);
+
+    c.initialize(0);
+    c.apply(swap());
+    c.collapse();
+    assert_eq!(0, c.value());
     c.reset();
 
     c.initialize(3);
