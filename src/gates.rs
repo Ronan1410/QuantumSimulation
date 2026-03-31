@@ -84,6 +84,17 @@ pub fn sqrt_swap() -> Gate
     Gate::new(2, m)
 }
 
+#[allow(unused)]
+pub fn contolled_not() -> Gate
+{
+    let m = m_real![1, 0, 0, 0;
+                            0, 1, 0, 0;
+                            0, 0, 0, 1;
+                            0, 0, 1, 0];
+
+    Gate::new(2, m)
+}
+
 #[test]
 fn identify_test()
 {
@@ -255,4 +266,36 @@ pub fn sqrt_swap_test()
     c.apply(swap());
     c.collapse();
     assert_eq!(3, c.value());
+}
+
+#[test]
+pub fn controlled_not_test()
+{
+    use crate::computer::QuantumComputer;
+
+    let mut c = QuantumComputer::new(2);
+
+    c.initialize(0);
+    c.apply(contolled_not());
+    c.collapse();
+    assert_eq!(0, c.value());
+    c.reset();
+
+    c.initialize(2);
+    c.apply(contolled_not());
+    c.collapse();
+    assert_eq!(3, c.value());
+    c.reset();
+
+    c.initialize(1);
+    c.apply(contolled_not());
+    c.collapse();
+    assert_eq!(1, c.value());
+    c.reset();
+
+    c.initialize(3);
+    c.apply(contolled_not());
+    c.collapse();
+    assert_eq!(2, c.value());
+    c.reset();
 }
