@@ -1,6 +1,7 @@
 use crate::ket::Ket;
 use crate::matrix::Matrix;
 
+#[derive(Debug, PartialEq)]
 pub struct Gate
 {
     width: usize,

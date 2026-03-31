@@ -78,6 +78,21 @@ impl Matrix
     {
         self.elements[i * MAX_SIZE + j] = value
     }
+
+    pub fn embed(self: &mut Matrix, other: &Matrix, i: usize, j: usize)
+    {
+        assert!(i + other.size <= self.size);
+        assert!(j + other.size <= self.size);
+
+        for x in 0..other.size
+        {
+            for y in 0..other.size
+            {
+                let value = other.get(x, y);
+                self.set(i + x, j + y, value);
+            }
+        }
+    }
 }
 
 impl fmt::Debug for Matrix
@@ -203,4 +218,15 @@ fn matrix_test()
     assert_eq!(added, &m + &m);
     assert_eq!(squared, &m * &m);
     assert_eq!(expected, &m * &v);
+}
+
+#[test]
+fn embed_test()
+{
+    let mut m = m_real![1, 2; 3, 4];
+    let mut n = m_real![5];
+
+    m.embed(&n, 1, 1);
+
+    assert_eq!(m_real![1, 2; 3, 4], m);
 }

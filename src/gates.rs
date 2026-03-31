@@ -107,6 +107,20 @@ macro_rules! test_gate
     };
 }
 
+#[allow(unused)]
+pub fn controlled(u: &Matrix) -> Gate
+{
+    assert_eq!(2, u.size());
+
+    let mut m = m_real![1, 0, 0, 0;
+                                0, 1, 0, 0;
+                                0, 0, 0, 0;
+                                0, 0, 0, 0];
+
+    m.embed(&u, 2, 2);
+    Gate::new(2, m)
+}
+
 #[test]
 fn identify_test()
 {
@@ -231,4 +245,12 @@ pub fn controlled_not_test()
     test_gate!(c, controlled_not(), 1, 1);
     test_gate!(c, controlled_not(), 2, 3);
     test_gate!(c, controlled_not(), 3, 2);
+}
+
+#[test]
+pub fn controlled_test()
+{
+    let g = controlled(&m_real![0, 1; 1, 0]);
+
+    assert_eq!(controlled_not(), g);
 }
