@@ -47,6 +47,19 @@ impl QuantumRegister
         }
         ClassicalRegister::from_state(self.width, 0)
     }
+
+    pub fn probablilites(&self) -> Vec<f64> 
+    {
+        assert_eq!(false, self.collapsed.get());
+
+        let mut probablilites = vec![];
+
+        for (_, coefficient) in self.ket.elements.iter().take(Ket::size(self.width)).enumerate()
+        {
+            probablilites.push(coefficient.norm_sqr());
+        }
+        probablilites
+    }
 }
 #[test]
 fn initialization_test()
@@ -165,4 +178,19 @@ fn state_test()
 
     assert_eq!(10, nibble.state());
     assert_eq!(nibble, ClassicalRegister::from_state(4, nibble.state()));
+}
+
+#[test]
+fn porobabilities_test()
+{
+    use crate::gates;
+    use float_cmp::ApproxEqUlps;
+    
+    let nibble = ClassicalRegister::zeroed(1);
+    let mut r: QuantumRegister = QuantumRegister::new(1, &nibble);
+    r.apply(crate::gates::hadamard(1));
+
+    assert_eq!(2, r.probablilites().len());
+    assert!(0.5f64.approx_eq_ulps(&r.probablilites()[0], 10));
+    assert!(0.5f64.approx_eq_ulps(&r.probablilites()[1], 10));
 }
