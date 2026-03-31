@@ -17,7 +17,7 @@ pub fn hadamard(n: usize) -> Gate
     let sqrt2inv = 2.0f64.sqrt().recip();
     
     let mut m = match n{
-        0 => m_real![sqrt2inv, sqrt2inv;
+        1 => m_real![sqrt2inv, sqrt2inv;
                             sqrt2inv, -sqrt2inv],
         2 => m_real![0.5, 0.5, 0.5, 0.5;
                             0.5, -0.5, 0.5, -0.5;
