@@ -73,8 +73,8 @@ pub fn swap() -> Gate
 #[allow(unused)]
 pub fn sqrt_swap() -> Gate
 {
-    let alpha_one = c!(0.5f64, 0.5f640);
-    let alpha_two = c!(0.5f64, -0.5f640);
+    let alpha_one = c!(0.5f64, 0.5f64);
+    let alpha_two = c!(0.5f64, -0.5f64);
 
     let m = m![Complex::one(), Complex::zero(), Complex::zero(), Complex::zero();
                         Complex::zero(), alpha_one, alpha_two, Complex::zero();
