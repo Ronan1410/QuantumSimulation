@@ -140,6 +140,18 @@ pub fn controlled_z() -> Gate
     controlled(pauli_z().matrix())
 }
 
+#[allow(unused)]
+pub fn toffoli() -> Gate
+{
+    let mut m = Matrix::identify(8);
+
+    let mut exchange = m_real![0, 1;
+                                        1, 0];
+    m.embed(&exchange, 6, 6);
+
+    Gate::new(3, m)
+}
+
 #[test]
 fn identify_test()
 {
@@ -272,4 +284,18 @@ pub fn controlled_test()
     let g = controlled(&m_real![0, 1; 1, 0]);
 
     assert_eq!(controlled_not(), g);
+}
+
+#[test]
+fn toffoli_test()
+{
+    use crate::computer::QuantumComputer;
+
+    let mut c = QuantumComputer::new(3);
+
+    test_gate!(c, toffoli(), 0, 0);
+    test_gate!(c, toffoli(), 1, 1);
+    test_gate!(c, toffoli(), 2, 2);
+    test_gate!(c, toffoli(), 6, 7);
+    test_gate!(c, toffoli(), 7, 6);
 }
