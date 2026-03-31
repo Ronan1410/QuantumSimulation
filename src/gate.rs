@@ -29,4 +29,11 @@ impl Gate
     {
         &self.matrix
     }
+
+    pub fn permute(&self, permutation: Vec<usize>) -> Gate
+    {
+        let m = self.matrix.permute_rows(permutation);
+
+        Gate::new(self.width, m)
+    }
 }
