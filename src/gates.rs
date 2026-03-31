@@ -85,7 +85,7 @@ pub fn sqrt_swap() -> Gate
 }
 
 #[allow(unused)]
-pub fn contolled_not() -> Gate
+pub fn controlled_not() -> Gate
 {
     let m = m_real![1, 0, 0, 0;
                             0, 1, 0, 0;
@@ -93,6 +93,18 @@ pub fn contolled_not() -> Gate
                             0, 0, 1, 0];
 
     Gate::new(2, m)
+}
+
+macro_rules! test_gate 
+{
+    ($computer:expr, $gate:expr, $from:expr, $to:expr) => 
+    {
+        $computer.initialize($from);
+        $computer.apply($gate);
+        $computer.collapse();
+        assert_eq!($to, $computer.value());
+        $computer.reset();
+    };
 }
 
 #[test]
@@ -147,16 +159,8 @@ fn pauli_x_test()
 
     let mut c = QuantumComputer::new(1);
 
-    c.initialize(0);
-    c.apply(pauli_y());
-    c.collapse();
-    assert_eq!(1, c.value());
-    c.reset();
-
-    c.initialize(1);
-    c.apply(pauli_y());
-    c.collapse();
-    assert_eq!(0, c.value());
+    test_gate!(c, paulu_x(), 0, 1);
+    test_gate!(c, paulu_x(), 1, 0);
 }
 
 #[test]
@@ -166,16 +170,8 @@ fn pauli_y_test()
 
     let mut c = QuantumComputer::new(1);
 
-    c.initialize(0);
-    c.apply(pauli_y());
-    c.collapse();
-    assert_eq!(1, c.value());
-    c.reset();
-
-    c.initialize(1);
-    c.apply(pauli_y());
-    c.collapse();
-    assert_eq!(0, c.value());
+    test_gate!(c, pauli_y(), 0, 1);
+    test_gate!(c, pauli_y(), 1, 0);
 }
 
 #[test]
@@ -185,16 +181,8 @@ fn pauli_z_test()
 
     let mut c = QuantumComputer::new(1);
 
-    c.initialize(0);
-    c.apply(pauli_z());
-    c.collapse();
-    assert_eq!(0, c.value());
-    c.reset();
-
-    c.initialize(1);
-    c.apply(pauli_z());
-    c.collapse();
-    assert_eq!(1, c.value());
+    test_gate!(c, pauli_z(), 0, 0);
+    test_gate!(c, pauli_z(), 1, 1);
 }
 
 #[test]
@@ -204,18 +192,8 @@ fn phase_shift_test() {
     let phi = 0.3f64;
     let mut c = QuantumComputer::new(1);
 
-    // |0> goes to |0>
-    c.initialize(0);
-    c.apply(phase_shift(phi));
-    c.collapse();
-    assert_eq!(0, c.value());
-    c.reset();
-
-    // |1> goes to exp(i * phi)|1>
-    c.initialize(1);
-    c.apply(phase_shift(phi));
-    c.collapse();
-    assert_eq!(1, c.value());
+    test_gate!(c, phase_shift(phi), 0, 0);
+    test_gate!(c, phase_shift(phi), 1, 1);
 }
 
 #[test]
@@ -225,28 +203,10 @@ fn swap_test()
 
     let mut c = QuantumComputer::new(2);
 
-    c.initialize(0);
-    c.apply(swap());
-    c.collapse();
-    assert_eq!(0, c.value());
-    c.reset();
-
-    c.initialize(1);
-    c.apply(swap());
-    c.collapse();
-    assert_eq!(2, c.value());
-    c.reset();
-
-    c.initialize(2);
-    c.apply(swap());
-    c.collapse();
-    assert_eq!(1, c.value());
-    c.reset();
-
-    c.initialize(3);
-    c.apply(swap());
-    c.collapse();
-    assert_eq!(3, c.value());
+    test_gate!(c, swap(), 0, 0);
+    test_gate!(c, swap(), 2, 1);
+    test_gate!(c, swap(), 1, 2);
+    test_gate!(c, swap(), 3, 3);
 }
 
 #[test]
@@ -256,16 +216,8 @@ pub fn sqrt_swap_test()
 
     let mut c = QuantumComputer::new(2);
 
-    c.initialize(0);
-    c.apply(swap());
-    c.collapse();
-    assert_eq!(0, c.value());
-    c.reset();
-
-    c.initialize(3);
-    c.apply(swap());
-    c.collapse();
-    assert_eq!(3, c.value());
+    test_gate!(c, sqrt_swap(), 0, 0);
+    test_gate!(c, sqrt_swap(), 3, 3);
 }
 
 #[test]
@@ -275,27 +227,8 @@ pub fn controlled_not_test()
 
     let mut c = QuantumComputer::new(2);
 
-    c.initialize(0);
-    c.apply(contolled_not());
-    c.collapse();
-    assert_eq!(0, c.value());
-    c.reset();
-
-    c.initialize(2);
-    c.apply(contolled_not());
-    c.collapse();
-    assert_eq!(3, c.value());
-    c.reset();
-
-    c.initialize(1);
-    c.apply(contolled_not());
-    c.collapse();
-    assert_eq!(1, c.value());
-    c.reset();
-
-    c.initialize(3);
-    c.apply(contolled_not());
-    c.collapse();
-    assert_eq!(2, c.value());
-    c.reset();
+    test_gate!(c, controlled_not(), 0, 0);
+    test_gate!(c, controlled_not(), 1, 1);
+    test_gate!(c, controlled_not(), 2, 3);
+    test_gate!(c, controlled_not(), 3, 2);
 }
