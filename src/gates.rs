@@ -22,7 +22,7 @@ pub fn hadamard() -> Gate
 }
 
 #[allow(unused)]
-pub fn paulu_x() -> Gate
+pub fn pauli_x() -> Gate
 {
     let m = m_real![0, 1;
                             1, 0];
@@ -121,6 +121,25 @@ pub fn controlled(u: &Matrix) -> Gate
     Gate::new(2, m)
 }
 
+#[allow(unused)]
+pub fn controlled_x() -> Gate
+{
+    use crate::gate;
+    controlled(pauli_x().matrix())
+}
+
+#[allow(unused)]
+pub fn controlled_y() -> Gate
+{
+    controlled(pauli_y().matrix())
+}
+
+#[allow(unused)]
+pub fn controlled_z() -> Gate
+{
+    controlled(pauli_z().matrix())
+}
+
 #[test]
 fn identify_test()
 {
@@ -173,8 +192,8 @@ fn pauli_x_test()
 
     let mut c = QuantumComputer::new(1);
 
-    test_gate!(c, paulu_x(), 0, 1);
-    test_gate!(c, paulu_x(), 1, 0);
+    test_gate!(c, pauli_x(), 0, 1);
+    test_gate!(c, pauli_x(), 1, 0);
 }
 
 #[test]
