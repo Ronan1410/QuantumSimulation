@@ -172,6 +172,29 @@ pub fn fredkin() -> Gate
     Gate::new(3, m)
 }
 
+#[allow(unused)]
+pub fn quantum_fourier_transform(n: usize) -> Gate
+{
+    let d = Ket::size(n);
+    let c = (d as f64).sqrt().recip();
+    let r = Complex::nth_root_of_unity(d as u32);
+
+    let mut m = Matrix::new(d);
+
+    for i in 0..d
+    {
+        for j in 0..i + 1
+        {
+            let v = c![c, 0f64] * r.pow((i * j) as u32);
+
+            m.set(i, j, v);
+            m.set(j, i, v);
+        }
+    }
+
+    Gate::new(n, m)
+}
+
 #[test]
 fn identify_test()
 {
@@ -331,4 +354,15 @@ fn fredkin_test()
     test_gate!(c, fredkin(), 5, 6);
     test_gate!(c, fredkin(), 6, 5);
     test_gate!(c, fredkin(), 7, 7);
+}
+
+#[test]
+fn quantum_fourier_transform_test()
+{
+    let qft = quantum_fourier_transform(2);
+
+    assert!(c![0.5f64, 0f64].approx_eq(&qft.matrix().get(3, 0)));
+    assert!(c![0.5f64, 0f64].approx_eq(&qft.matrix().get(3, 1)));
+    assert!(c![0.5f64, 0f64].approx_eq(&qft.matrix().get(3, 2)));
+    assert!(c![0.5f64, 0f64].approx_eq(&qft.matrix().get(3, 3)));
 }

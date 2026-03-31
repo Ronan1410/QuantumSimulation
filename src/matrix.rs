@@ -93,13 +93,43 @@ impl Matrix
             }
         }
     }
+
+    pub fn approx_eq(&self, other: &Matrix) -> bool
+    {
+        if self.size != other.size
+        {
+            return false;
+        }
+
+        for i in 0..self.size
+        {
+            for j in 0..self.size
+            {
+                if !self.get(i, j).approx_eq(&other.get(i, j))
+                {
+                    return false;
+                }
+            }
+        }
+
+        true
+    }
 }
 
 impl fmt::Debug for Matrix
 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result
     {
-        write!(f, "Matrix(size-{}, elemetns=...)", self.size)
+        write!(f, "Matrix(size-{}, elemetns=[", self.size).ok();
+        for i in 0..self.size
+        {
+            write!(f, "\n").ok();
+            for j in 0..self.size
+            {
+                write!(f, "[{:?}]", self.get(i, j)).ok();
+            }
+        }
+        write!(f, "]")
     }
 }
 
